@@ -17,7 +17,7 @@ g = 9.8
 
 
 def exit_pressure_ratio(eps, k):
-    """Pe/Pc for a given expansion ratio eps = Ae/At (supersonic branch)."""
+    # Pe/Pc for a given expansion ratio eps
     def f(r):
         a = (2 / (k + 1)) ** (1 / (k - 1)) * (1 / r) ** (1 / k)
         b = np.sqrt((k + 1) / (k - 1) * (1 - r ** ((k - 1) / k)))
@@ -27,7 +27,7 @@ def exit_pressure_ratio(eps, k):
 
 
 def thrust_coeff(eps, Pa, k, Pc):
-    """Ideal thrust coefficient including the pressure-mismatch term."""
+    # Ideal thrust coefficient
     r = exit_pressure_ratio(eps, k)
     momentum = np.sqrt(2 * k**2 / (k - 1)
                        * (2 / (k + 1)) ** ((k + 1) / (k - 1))
