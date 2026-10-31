@@ -27,7 +27,7 @@ KNDX — Second comparison
 Third propellant — Additional comparison case
 ```
 
-| KNSB | KNDX | Third Propellant |
+| KNSB | KNDX | Blue Thunder |
 |:---:|:---:|:---:|
 | <img width="531" height="533" alt="Screenshot 2026-10-31 181911" src="https://github.com/user-attachments/assets/bf93b14e-15ef-4471-aa02-2c6467836256" />  | <img width="530" height="527" alt="Screenshot 2026-10-31 181920" src="https://github.com/user-attachments/assets/40bbc836-4196-4ea5-9370-f76255288e5d" /> | <img width="536" height="533" alt="Screenshot 2026-10-31 181900" src="https://github.com/user-attachments/assets/1fbb7741-a59b-4af9-8ca5-553982a0cc63" />|
 
@@ -38,7 +38,7 @@ The three motor simulations are imported into OpenRocket and evaluated using a c
 
 The flight simulations investigate how differences in motor thrust characteristics influence the rocket's trajectory and flight performance.
 
-| [Rocket Design](assets/openrocket_design.png) |
+| [Rocket Design] |
 |:---:|
 | <img width="678" height="143" alt="image" src="https://github.com/user-attachments/assets/e65db89f-819c-4450-881c-3b5c48465463" />
  |
@@ -52,7 +52,7 @@ Time to apogee
 Velocity off rod
 ```
 
-| [Rocket Simulations](assets/openrocket_design.png) |
+|[Rocket Simulations]|
 
 | KNSB | KNDX | Third Propellant |
 |:---:|:---:|:---:|
@@ -81,7 +81,7 @@ The script generates:
 - Corresponding ideal specific impulse
 - Comparison of thrust coefficient at an expansion ratio of 6
 
-| [Nozzle Expansion Results](assets/nozzle_study.png) |
+| [Nozzle Expansion Results] |
 |:---:|
 | <img width="1200" height="750" alt="nozzle_study" src="https://github.com/user-attachments/assets/98826cf7-7491-4133-b01c-4c96361b72a7" /> |
 
@@ -147,12 +147,5 @@ The combined results illustrate the relationship between propellant characterist
 - Compare analytical nozzle predictions with openMotor simulation results.
 - Investigate the influence of grain geometry and nozzle configuration.
 
----
-
-## ⚠️ Modeling Assumptions
-
-The results are based on computational simulations and idealized nozzle-flow calculations. They represent modeled performance rather than experimentally validated motor performance.
-
-The nozzle study assumes idealized flow and does not account for all real-world nozzle losses or combustion effects.
 
 All comparisons are based on consistent modeling assumptions and simulation settings.
