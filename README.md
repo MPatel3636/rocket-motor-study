@@ -18,13 +18,29 @@ An additional Python-based nozzle expansion study examines the relationship betw
 
 ### 1️⃣ Propellant Performance Comparison — openMotor
 
+### ⚙️ Motor Configuration
+
+The BATES grain geometry and nozzle configuration are held constant across the propellant comparison to isolate the effects of propellant selection.
+
+| Parameter | Configuration |
+|---|---|
+| Grain | BATES, 4 segments × 70 mm |
+| Outer diameter | 69 mm |
+| Core diameter | 30 mm (20 mm in initial attempt; see Chapter 1) |
+| Throat / exit diameter | 15 mm / 36.7 mm |
+| Nozzle expansion ratio | 6 |
+| Ambient conditions | Sea level |
+| Baseline propellant | Nakka KNSB |
+
+
+
 Three different propellant property sets are evaluated using the same grain geometry and nozzle configuration to isolate the effects of propellant selection.
 
 Propellant cases:
 ```
 KNSB — Baseline propellant
 KNDX — Second comparison
-Third propellant — Additional comparison case
+RCS Blue Thunder — Third case
 ```
 
 | KNSB | KNDX | Blue Thunder |
@@ -40,8 +56,7 @@ The flight simulations investigate how differences in motor thrust characteristi
 
 | [Rocket Design] |
 |:---:|
-| <img width="678" height="143" alt="image" src="https://github.com/user-attachments/assets/e65db89f-819c-4450-881c-3b5c48465463" />
- |
+| <img width="678" height="143" alt="image" src="https://github.com/user-attachments/assets/e65db89f-819c-4450-881c-3b5c48465463" />|
 
 Flight comparison metrics:
 ```
@@ -52,7 +67,7 @@ Time to apogee
 Velocity off rod
 ```
 
-|[Rocket Simulations]|
+| [Rocket Simulations] |
 
 | KNSB | KNDX | Third Propellant |
 |:---:|:---:|:---:|
@@ -128,24 +143,80 @@ The script prints a performance table and saves the generated plot as `nozzle_st
 
 ## 📈 Results and Discussion
 
-The project compares propulsion performance at two levels:
 
-- **Motor level:** How propellant properties influence thrust characteristics and overall motor performance.
-- **Vehicle level:** How differences in motor thrust curves affect rocket flight.
+### 🔥 Motor-Level Results (openMotor)
 
-The nozzle expansion study provides an analytical perspective on how nozzle geometry and ambient pressure influence ideal thrust coefficient and specific impulse.
+All three propellants were run in the same motor: four BATES segments (69 mm outer diameter, 30 mm core, 70 mm long), a 15 mm throat, a 36.7 mm exit, at sea level.
 
-The combined results illustrate the relationship between propellant characteristics, nozzle performance, and rocket flight behavior.
+| | KNSB | KNDX | Blue Thunder |
+|:---|:---:|:---:|:---:|
+| Motor designation | K626 | K859 | L1387 |
+| Total impulse | 1,615 N·s | 1,702 N·s | 2,621 N·s |
+| Burn time | 2.55 s | 1.95 s | 1.86 s |
+| Delivered Isp | 110.9 s | 114.5 s | 193.7 s |
+| Average / peak pressure | 421 / 495 psi | 563 / 875 psi | 898 / 1,158 psi |
+| Propellant mass | 3.28 lb | 3.34 lb | 3.04 lb |
 
+- Blue Thunder delivers about **70% more Isp** than the two sugar propellants, from a *lighter* grain.
+- Faster-burning propellants run at higher chamber pressure in the same nozzle.
+- Kn was identical for all three (286.6 initial, 287.8 peak), confirming that only the propellant changed.
+
+**Design iteration:** the first design used a 20 mm core and triggered openMotor warnings (port/throat ratio of 1.78, below the recommended 2.0, and peak mass flux above the limit). Widening the core to 30 mm raised the port/throat ratio to 4.00 and cut peak mass flux from 2.32 to 1.21 lb/(in²·s), at the cost of about 11% less propellant (3.70 to 3.28 lb) and lower impulse (1,894 to 1,615 N·s).
+
+### 🚀 Vehicle-Level Results (OpenRocket)
+
+The three thrust curves were flown in the same rocket.
+
+| | KNSB | KNDX | Blue Thunder |
+|:---|:---:|:---:|:---:|
+| Apogee | 2,224 m | 2,314 m | 3,308 m |
+| Max velocity | 277 m/s | 295 m/s | 452 m/s |
+| Max acceleration | 133 m/s² | 257 m/s² | 338 m/s² |
+| Time to apogee | 20.0 s | 19.8 s | 22.4 s |
+| Velocity off rod | 16.9 m/s | 23.0 m/s | 25.7 m/s |
+
+- Blue Thunder has 62% more impulse than KNSB but flies only about **49% higher**. Drag grows with the square of speed, so the faster rocket loses more energy to the air.
+- KNDX and KNSB have similar total impulse (KNDX is 5% higher, with 4% higher apogee), but KNDX delivers it in a shorter burn, giving nearly **double the peak acceleration** (257 vs 133 m/s²).
+- KNSB leaves the launch rod at 16.9 m/s, barely above the usual 15 m/s guideline.
+- ⚠️ Blue Thunder reached 452 m/s (about Mach 1.3), and OpenRocket warned that body calculations may not be entirely accurate at supersonic speeds. Its apogee should be treated as approximate, though the trend (more impulse, higher apogee) is expected to hold.
+
+### 📐 Nozzle Expansion Results
+
+**openMotor check (KNSB, sea level):** changing only the exit diameter from 36.7 mm (expansion ratio 6.0) to 55 mm (ratio 13.4) left chamber pressure (495 psi) and burn time (2.55 s) unchanged, but reduced impulse from 1,615 to 1,473 N·s (about 9%) and delivered Isp from 110.9 to 101.1 s. The larger nozzle is over-expanded at sea level.
+
+**Python validation:** with the motor's average chamber pressure (2.9 MPa), the nozzle script reproduces openMotor's ideal thrust coefficient at both expansion ratios.
+
+| Expansion ratio | Python script | openMotor |
+|:---:|:---:|:---:|
+| 6.0 | 1.495 | 1.49 |
+| 13.4 | 1.361 | 1.36 |
+
+**Best nozzle by altitude** (ideal nozzle, with KNSB-like inputs: γ = 1.13, c* = 912 m/s, Pc = 2.9 MPa):
+
+| Condition | Best expansion ratio | Best Cf | Ideal Isp |
+|:---|:---:|:---:|:---:|
+| Sea level | 5.2 | 1.50 | 139 s |
+| 5 km | 8.5 | 1.60 | 149 s |
+| 10 km | 15.1 | 1.71 | 159 s |
+| Vacuum | 30+ (still rising) | 1.93 | 180 s |
+
+The optimum nozzle grows with altitude because ambient pressure falls relative to chamber pressure.
+
+### ⚠️ Limitations
+
+- Motor hardware mass (case, closures, nozzle) was a placeholder estimate, identical for all three motors. Apogees are for comparing motors, not predicting real flights.
+- The nozzle study uses KNSB-like gas properties and pressure, so its altitude results apply to that motor only, not to all three propellants.
+- The nozzle script assumes a loss-free nozzle and a single chamber pressure, and ignores flow separation in strongly over-expanded nozzles.
+- openMotor does not fully model erosive burning, and OpenRocket is less accurate above Mach 1.
+- Propellant data comes from openMotor's built-in library, and real batches vary.
 ---
 
 ## 🚀 Future Work
 
-- Automate propellant comparisons using Python.
-- Generate overlaid thrust curves and performance comparison tables.
-- Expand the nozzle study to additional expansion ratios and ambient pressures.
-- Compare analytical nozzle predictions with openMotor simulation results.
-- Investigate the influence of grain geometry and nozzle configuration.
+- **Automated propellant sweep:** write a Python program that loops through many propellants and simulates the same motor for each one with no manual steps, collecting impulse, burn time, Isp, and peak pressure, then ranks and plots them.
+- **Automated flight simulation:** export each simulated motor's thrust curve and fly it in the same rocket through a scriptable simulator (such as RocketPy), using a flight model that handles supersonic speeds better than the OpenRocket runs here.
+- **Validation:** check the program against the three hand-run cases in this study (K626, K859, L1387) before trusting it on new propellants.
+- **Wider design space:** sweep grain geometry and nozzle dimensions alongside propellant, and run the nozzle model with each propellant's own gas properties instead of the KNSB-like values used here.
 
 
 All comparisons are based on consistent modeling assumptions and simulation settings.
